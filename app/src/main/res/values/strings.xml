@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Baking Time</string>
+
+    <string name="recipe_item_image">Recipe Item Image</string>
+    <string name="recipe_image_description">Recipe Image</string>
+    <string name="watch_video_text">Watch Video</string>
+    <string name="step_label">Step</string>
+    <string name="step_number_hint">Step Number</string>
+    <string name="step_description_hint">Step Description</string>
 </resources>

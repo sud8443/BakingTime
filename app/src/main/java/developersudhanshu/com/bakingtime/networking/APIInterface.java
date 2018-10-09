@@ -1,5 +1,7 @@
 package developersudhanshu.com.bakingtime.networking;
 
+import java.util.ArrayList;
+
 import developersudhanshu.com.bakingtime.model.RecipeResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -12,5 +14,5 @@ public interface APIInterface {
 
     // Interface to define the API end points
     @GET("baking.json")
-    Call<RecipeResponse> getRecipeData();
+    Call<ArrayList<RecipeResponse>> getRecipeData();
 }
