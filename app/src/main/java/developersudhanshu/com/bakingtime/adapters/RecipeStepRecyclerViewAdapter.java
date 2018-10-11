@@ -19,6 +19,11 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
 
     private Context mContext;
     private ArrayList<Step> mSteps;
+    private OnWatchButtonClickedListener listener;
+
+    public void setOnWatchButtonClickListener(OnWatchButtonClickedListener listener){
+        this.listener = listener;
+    }
 
     public RecipeStepRecyclerViewAdapter(Context context, ArrayList<Step> steps) {
         mContext = context;
@@ -34,12 +39,18 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.stepNumber.setText(String.valueOf(position + 1));
         holder.stepDescription.setText(mSteps.get(position).getShortDescription());
         if (!TextUtils.isEmpty(mSteps.get(position).getVideoURL())){
             holder.watchVideo.setVisibility(View.VISIBLE);
             // Set an OnClickListener to open another activity to show the video playing in it
+            holder.watchVideo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onWatchVideoClicked(mSteps.get(position).getVideoURL());
+                }
+            });
         }else{
             holder.watchVideo.setVisibility(View.GONE);
         }
@@ -61,5 +72,9 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
             stepDescription = itemView.findViewById(R.id.tv_step_desc);
             watchVideo = itemView.findViewById(R.id.btn_watch_video);
         }
+    }
+
+    public interface OnWatchButtonClickedListener {
+        void onWatchVideoClicked(String videoUrl);
     }
 }

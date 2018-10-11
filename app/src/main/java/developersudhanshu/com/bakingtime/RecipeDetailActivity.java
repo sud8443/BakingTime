@@ -1,5 +1,6 @@
 package developersudhanshu.com.bakingtime;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,5 +46,15 @@ public class RecipeDetailActivity extends AppCompatActivity {
         recipeStepsRecyclerView.setAdapter(adapter);
         recipeStepsRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
+
+        adapter.setOnWatchButtonClickListener(new RecipeStepRecyclerViewAdapter.OnWatchButtonClickedListener() {
+            @Override
+            public void onWatchVideoClicked(String videoUrl) {
+                Intent recipeDetailActivityIntent = new Intent(RecipeDetailActivity.this,
+                        RecipeStepDetailActivity.class);
+                recipeDetailActivityIntent.putExtra(Constants.RECIPE_STEP_URL_EXTRA_KEY, videoUrl);
+                startActivity(recipeDetailActivityIntent);
+            }
+        });
     }
 }
