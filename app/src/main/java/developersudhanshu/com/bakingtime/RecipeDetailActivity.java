@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +21,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
     private RecyclerView recipeStepsRecyclerView;
     private RecipeStepRecyclerViewAdapter adapter;
     private ArrayList<Step> mSteps;
+    private ImageView recipeDishImage;
+    private Toolbar toolbar;
+    RecipeDetails recipeDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,19 +32,19 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         mSteps = new ArrayList<>();
 
-        setUpViews();
-
         if (getIntent() != null && getIntent().hasExtra(Constants.RECIPE_DATA_EXTRA_KEY)){
-            RecipeDetails recipeDetails = getIntent().getParcelableExtra(Constants.RECIPE_DATA_EXTRA_KEY);
-            recipeIngredientsTextView.setText(recipeDetails.getName());
+            recipeDetails = getIntent().getParcelableExtra(Constants.RECIPE_DATA_EXTRA_KEY);
 
             mSteps.addAll(recipeDetails.getSteps());
         }
+
+        setUpViews();
     }
 
     private void setUpViews() {
-        recipeIngredientsTextView = findViewById(R.id.tv_recipe_ingredients_act_recipe_details);
         recipeStepsRecyclerView = findViewById(R.id.rv_recipe_steps_act_recipe_details);
+        recipeDishImage = findViewById(R.id.img_view_recipe_act_recipe_details);
+        toolbar = findViewById(R.id.toolbar_act_recipe_details);
 
         adapter = new RecipeStepRecyclerViewAdapter(this, mSteps);
 
@@ -47,14 +52,19 @@ public class RecipeDetailActivity extends AppCompatActivity {
         recipeStepsRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
 
-        adapter.setOnWatchButtonClickListener(new RecipeStepRecyclerViewAdapter.OnWatchButtonClickedListener() {
+        adapter.setOnItemClickListener(new RecipeStepRecyclerViewAdapter.OnItemClickListener() {
             @Override
-            public void onWatchVideoClicked(String videoUrl) {
+            public void onItemClicked(int position) {
                 Intent recipeDetailActivityIntent = new Intent(RecipeDetailActivity.this,
                         RecipeStepDetailActivity.class);
-                recipeDetailActivityIntent.putExtra(Constants.RECIPE_STEP_URL_EXTRA_KEY, videoUrl);
+                recipeDetailActivityIntent.putParcelableArrayListExtra(Constants.RECIPE_STEP_DATA_EXTRA_KEY,
+                        mSteps);
+                recipeDetailActivityIntent.putExtra(Constants.RECIPE_STEP_CHOSEN_TO_WATCH_EXTRA_KEY, position);
                 startActivity(recipeDetailActivityIntent);
             }
         });
+
+        recipeDishImage.setImageResource(Constants.RECIPE_IMAGE_HASH_MAP.get(recipeDetails.getName()));
+        toolbar.setTitle(recipeDetails.getName());
     }
 }

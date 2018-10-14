@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".RecipeStepDetailActivity">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager_act_recipe_step_detail"
+    <FrameLayout
+        android:id="@+id/fl_act_recipe_step_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"

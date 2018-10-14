@@ -1,47 +1,68 @@
 package developersudhanshu.com.bakingtime;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.widget.FrameLayout;
+
+import java.util.ArrayList;
 
 import developersudhanshu.com.bakingtime.fragments.RecipeStepDetailFragment;
+import developersudhanshu.com.bakingtime.model.Step;
 
 public class RecipeStepDetailActivity extends AppCompatActivity {
 
-    private ViewPager viewPager;
-    private int stepsWithVideo = 5;
+    // TODO: When this activity ends the previous activity should show the appropriate step in the view
+
+    private int stepsWithVideo;
+    private int stepChosenToWatch = -1;
+    private ArrayList<Step> mSteps;
+    FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_step_detail);
 
-        Toast.makeText(this, "Watch the step on: " +
-                getIntent().getStringExtra(Constants.RECIPE_STEP_URL_EXTRA_KEY),
-                Toast.LENGTH_SHORT).show();
-        viewPager = findViewById(R.id.view_pager_act_recipe_step_detail);
+        if(getIntent() != null) {
+            if (getIntent().hasExtra(Constants.RECIPE_STEP_CHOSEN_TO_WATCH_EXTRA_KEY))
+                stepChosenToWatch = getIntent().getIntExtra(Constants.RECIPE_STEP_CHOSEN_TO_WATCH_EXTRA_KEY, -1);
 
-        viewPager.setAdapter(new RecipeStepDetailPagerAdapter(getSupportFragmentManager()));
+            if (getIntent().hasExtra(Constants.RECIPE_STEP_DATA_EXTRA_KEY))
+                mSteps = getIntent().getParcelableArrayListExtra(Constants.RECIPE_STEP_DATA_EXTRA_KEY);
+        }
+
+        if(mSteps != null)
+            stepsWithVideo = mSteps.size();
+
+        if (savedInstanceState == null) {
+            // TODO: Did this because on Rotation the Activity gets recreated and first the same
+            // fragment gets recreated too then then another fragment gets created and replaces the first one
+            // (due to activity recreation) so to avoid this we will only add the fragment once and
+            // next time the same fragment will be reused.
+            fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().
+                    replace(R.id.fl_act_recipe_step_detail,
+                            new RecipeStepDetailFragment(mSteps.get(stepChosenToWatch))).
+                    commit();
+        }
+
     }
 
-    public class RecipeStepDetailPagerAdapter extends FragmentStatePagerAdapter {
-
-        public RecipeStepDetailPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return new RecipeStepDetailFragment();
-        }
-
-        @Override
-        public int getCount() {
-            return stepsWithVideo;
-        }
-    }
+//    public class RecipeStepDetailPagerAdapter extends FragmentStatePagerAdapter {
+//
+//        public RecipeStepDetailPagerAdapter(FragmentManager fm) {
+//            super(fm);
+//        }
+//
+//        @Override
+//        public Fragment getItem(int position) {
+//            return new RecipeStepDetailFragment(mSteps.get(position));
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return stepsWithVideo;
+//        }
+//    }
 }

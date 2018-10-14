@@ -3,7 +3,6 @@ package developersudhanshu.com.bakingtime.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +18,9 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
 
     private Context mContext;
     private ArrayList<Step> mSteps;
-    private OnWatchButtonClickedListener listener;
+    private OnItemClickListener listener;
 
-    public void setOnWatchButtonClickListener(OnWatchButtonClickedListener listener){
+    public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
     }
 
@@ -42,18 +41,12 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.stepNumber.setText(String.valueOf(position + 1));
         holder.stepDescription.setText(mSteps.get(position).getShortDescription());
-        if (!TextUtils.isEmpty(mSteps.get(position).getVideoURL())){
-            holder.watchVideo.setVisibility(View.VISIBLE);
-            // Set an OnClickListener to open another activity to show the video playing in it
-            holder.watchVideo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onWatchVideoClicked(mSteps.get(position).getVideoURL());
-                }
-            });
-        }else{
-            holder.watchVideo.setVisibility(View.GONE);
-        }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClicked(position);
+            }
+        });
     }
 
     @Override
@@ -64,17 +57,15 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView stepNumber, stepDescription;
-        Button watchVideo;
 
         public ViewHolder(View itemView) {
             super(itemView);
             stepNumber = itemView.findViewById(R.id.tv_step_number);
             stepDescription = itemView.findViewById(R.id.tv_step_desc);
-            watchVideo = itemView.findViewById(R.id.btn_watch_video);
         }
     }
 
-    public interface OnWatchButtonClickedListener {
-        void onWatchVideoClicked(String videoUrl);
+    public interface OnItemClickListener {
+        void onItemClicked(int position);
     }
 }

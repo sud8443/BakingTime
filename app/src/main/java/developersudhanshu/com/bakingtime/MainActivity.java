@@ -73,15 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpImagePaths() {
         for (RecipeData recipe: recipeDataArrayList){
-            if (recipe.getName().equals("Nutella Pie")){
-                recipe.setImageResourceId(R.drawable.nutella_pie);
-            }else if(recipe.getName().equals("Brownies")){
-                recipe.setImageResourceId(R.drawable.brownies);
-            }else if(recipe.getName().equals("Yellow Cake")){
-                recipe.setImageResourceId(R.drawable.yellow_cake);
-            }else if(recipe.getName().equals("Cheesecake")){
-                recipe.setImageResourceId(R.drawable.cheese_cake);
-            }
+            recipe.setImageResourceId(Constants.RECIPE_IMAGE_HASH_MAP.get(recipe.getName()));
         }
     }
 
