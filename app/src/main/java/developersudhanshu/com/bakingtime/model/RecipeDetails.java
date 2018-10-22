@@ -8,12 +8,22 @@ import java.util.List;
 
 public class RecipeDetails implements Parcelable {
 
-    public RecipeDetails(String name, List<Ingredient> ingredients, List<Step> steps) {
+    public RecipeDetails(int recipeId, String name, List<Ingredient> ingredients, List<Step> steps) {
+        this.recipeId = recipeId;
         this.name = name;
         this.ingredients = ingredients;
         this.steps = steps;
     }
 
+    public int getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(int recipeId) {
+        this.recipeId = recipeId;
+    }
+
+    private int recipeId;
     private String name;
     private List<Ingredient> ingredients;
     private List<Step> steps;
@@ -49,12 +59,14 @@ public class RecipeDetails implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.recipeId);
         dest.writeString(this.name);
         dest.writeList(this.ingredients);
         dest.writeList(this.steps);
     }
 
     protected RecipeDetails(Parcel in) {
+        this.recipeId = in.readInt();
         this.name = in.readString();
         this.ingredients = new ArrayList<>();
         in.readList(this.ingredients, Ingredient.class.getClassLoader());

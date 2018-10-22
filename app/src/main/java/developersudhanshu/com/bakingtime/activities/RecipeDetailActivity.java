@@ -1,4 +1,5 @@
-package developersudhanshu.com.bakingtime;
+package developersudhanshu.com.bakingtime.activities;
+
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -11,9 +12,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import developersudhanshu.com.bakingtime.R;
 import developersudhanshu.com.bakingtime.adapters.RecipeStepRecyclerViewAdapter;
 import developersudhanshu.com.bakingtime.model.RecipeDetails;
 import developersudhanshu.com.bakingtime.model.Step;
+import developersudhanshu.com.bakingtime.services.RecipeWidgetUpdateService;
+import developersudhanshu.com.bakingtime.utility.Constants;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
@@ -38,6 +42,14 @@ public class RecipeDetailActivity extends AppCompatActivity {
             mSteps.addAll(recipeDetails.getSteps());
         }
 
+        // Updating the recipeId in shared preference through a service
+        Intent updateRecipeId = new Intent(this, RecipeWidgetUpdateService.class);
+        updateRecipeId.setAction(RecipeWidgetUpdateService.ACTION_UPDATE_RECIPE_ID_FOR_WIDGET);
+        updateRecipeId.putExtra(Constants.RECIPE_ID_INTENT_EXTRA_KEY, recipeDetails.getRecipeId());
+        updateRecipeId.putExtra(Constants.RECIPE_NAME_INTENT_EXTRA_KEY, recipeDetails.getName());
+        startService(updateRecipeId);
+
+//        RecipeWidgetUpdateService.startActionUpdateWidget(this);
         setUpViews();
     }
 

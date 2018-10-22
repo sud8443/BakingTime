@@ -1,6 +1,8 @@
-package developersudhanshu.com.bakingtime;
+package developersudhanshu.com.bakingtime.utility;
 
 import java.util.HashMap;
+
+import developersudhanshu.com.bakingtime.R;
 
 public abstract class Constants {
     // Making the class as abstract since it will not be instantiated
@@ -14,6 +16,20 @@ public abstract class Constants {
     public static final String RECIPE_NAME_CHEESE_CAKE = "Cheesecake";
     public static final String EXO_PLAYER_POSITION_KEY = "ExoPlayerPosition";
     public static final String EXO_PLAYER_IS_PAUSED_KEY = "ExoPlayerPaused";
+
+    public static final int INVALID_RECIPE_ID = -1;
+    public static final String INVALID_RECIPE_NAME = "No Recipe";
+
+    public static final String RECIPE_ID_INTENT_EXTRA_KEY = "RecipeIdIntentKey";
+    public static final String RECIPE_NAME_INTENT_EXTRA_KEY = "RecipeNameIntentKey";
+
+    public static final String BULLET_CODE = "\u2022";
+
+    // Shared preferences key
+    public static final String SHARED_PREFERENCES_NAME = "RecipeShredPreferences";
+    public static final String RECIPE_ID_SHARED_PREFERENCES_KEY = "RecipeIdSharedPreferences";
+    public static final String FIRST_LAUNCH_SHARED_PREFERENCES_KEY = "FirstLaunch";
+    public final static String RECIPE_NAME_SHARED_PREFERENCES_KEY = "RecipeNameSharedPreference";
     public static final HashMap<String , Integer> RECIPE_IMAGE_HASH_MAP =
             new HashMap<String, Integer>(){{
                 put(Constants.RECIPE_NAME_NUTELLA_PIE, R.drawable.nutella_pie);

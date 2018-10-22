@@ -6,12 +6,12 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_pastery_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,9 +19,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RecipeDetailActivity"
+            android:name=".activities.RecipeDetailActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-        <activity android:name=".RecipeStepDetailActivity"></activity>
+        <activity android:name=".activities.RecipeStepDetailActivity" />
+
+        <receiver android:name=".widget.RecipeIngredientWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recipe_ingredient_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".services.RecipeWidgetUpdateService"
+            android:enabled="true"
+            android:exported="false"/>
+
+        <service
+            android:name=".widget.RecipeWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
     </application>
 
 </manifest>

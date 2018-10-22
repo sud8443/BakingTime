@@ -15,7 +15,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +34,7 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
-import developersudhanshu.com.bakingtime.Constants;
+import developersudhanshu.com.bakingtime.utility.Constants;
 import developersudhanshu.com.bakingtime.R;
 import developersudhanshu.com.bakingtime.lifecycle_components.RecipeStepViewModel;
 import developersudhanshu.com.bakingtime.lifecycle_components.RecipeStepViewModelFactory;

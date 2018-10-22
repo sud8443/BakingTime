@@ -1,14 +1,15 @@
-package developersudhanshu.com.bakingtime;
+package developersudhanshu.com.bakingtime.activities;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 
+import developersudhanshu.com.bakingtime.R;
 import developersudhanshu.com.bakingtime.fragments.RecipeStepDetailFragment;
 import developersudhanshu.com.bakingtime.model.Step;
+import developersudhanshu.com.bakingtime.utility.Constants;
 
 public class RecipeStepDetailActivity extends AppCompatActivity {
 

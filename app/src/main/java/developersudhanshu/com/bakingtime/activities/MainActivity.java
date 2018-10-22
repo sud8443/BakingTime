@@ -1,21 +1,27 @@
-package developersudhanshu.com.bakingtime;
+package developersudhanshu.com.bakingtime.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 
 import java.util.ArrayList;
 
+import developersudhanshu.com.bakingtime.R;
 import developersudhanshu.com.bakingtime.adapters.RecipeRecyclerViewAdapter;
+import developersudhanshu.com.bakingtime.lifecycle_components.AppExecutors;
+import developersudhanshu.com.bakingtime.lifecycle_components.RecipeDatabase;
+import developersudhanshu.com.bakingtime.lifecycle_components.RecipeIngredientModel;
+import developersudhanshu.com.bakingtime.model.Ingredient;
 import developersudhanshu.com.bakingtime.model.RecipeData;
 import developersudhanshu.com.bakingtime.model.RecipeDetails;
 import developersudhanshu.com.bakingtime.model.RecipeResponse;
 import developersudhanshu.com.bakingtime.networking.APIClient;
 import developersudhanshu.com.bakingtime.networking.APIInterface;
+import developersudhanshu.com.bakingtime.utility.Constants;
+import developersudhanshu.com.bakingtime.utility.Utility;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<RecipeData> recipeDataArrayList;
     private RecipeRecyclerViewAdapter adapter;
     private ArrayList<RecipeDetails> recipeDetailsArrayList;
+    private RecipeDatabase mDb;
+    private AppExecutors executors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +46,15 @@ public class MainActivity extends AppCompatActivity {
         setUpRecyclerView();
 
         fetchingRecipeDataAndUpdatingViews();
+        mDb = RecipeDatabase.getInstance(this);
+        executors = AppExecutors.getsInstance(this);
     }
 
     private void fetchingRecipeDataAndUpdatingViews() {
         APIInterface apiInterface = APIClient.getRetrofitInstance().create(APIInterface.class);
         apiInterface.getRecipeData().enqueue(new Callback<ArrayList<RecipeResponse>>() {
             @Override
-            public void onResponse(Call<ArrayList<RecipeResponse>> call, Response<ArrayList<RecipeResponse>> response) {
+            public void onResponse(Call<ArrayList<RecipeResponse>> call, final Response<ArrayList<RecipeResponse>> response) {
                 if(response.isSuccessful()){
 
                     // Iterating through the recipe data to get individual recipe's
@@ -54,11 +64,30 @@ public class MainActivity extends AppCompatActivity {
                         RecipeData recipeData = new RecipeData(recipe.getName(),
                                 recipe.getSteps().size(), recipe.getServings());
                         recipeDataArrayList.add(recipeData);
-                        recipeDetailsArrayList.add(new RecipeDetails(recipe.getName(),
+                        recipeDetailsArrayList.add(new RecipeDetails(recipe.getId(),
+                                recipe.getName(),
                                 recipe.getIngredients(), recipe.getSteps()));
                     }
                     setUpImagePaths();
                     adapter.notifyDataSetChanged();
+
+                    // Saving the recipes to the database
+                    if (Utility.isFirstLaunch(MainActivity.this)) {
+                        executors.diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                for (RecipeResponse recipe: response.body()) {
+                                    for (Ingredient ingredient : recipe.getIngredients()) {
+                                        mDb.getRecipeDao().insertRecipe(
+                                                new RecipeIngredientModel(recipe.getId(), recipe.getName(),
+                                                        ingredient.getQuantity(), ingredient.getMeasure(),
+                                                        ingredient.getIngredient()));
+                                    }
+                                }
+                            }
+                        });
+                        Utility.setFirstLaunch(MainActivity.this, false);
+                    }
                 }else{
                     Log.v("RESPONSE", "Response failed");
                 }
