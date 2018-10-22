@@ -19,6 +19,7 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
     private Context mContext;
     private ArrayList<Step> mSteps;
     private OnItemClickListener listener;
+    private static int lastClickedPosition = -1;
 
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
@@ -41,9 +42,14 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.stepNumber.setText(String.valueOf(position + 1));
         holder.stepDescription.setText(mSteps.get(position).getShortDescription());
+        holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.cardview_light_background));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.setBackgroundColor(mContext.getResources().getColor(R.color.cardview_dark_background));
+                if (lastClickedPosition != -1)
+                    notifyItemChanged(lastClickedPosition);
+                lastClickedPosition = position;
                 listener.onItemClicked(position);
             }
         });

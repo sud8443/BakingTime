@@ -4,11 +4,13 @@ package developersudhanshu.com.bakingtime.activities;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 
 import developersudhanshu.com.bakingtime.R;
 import developersudhanshu.com.bakingtime.adapters.RecipeStepRecyclerViewAdapter;
+import developersudhanshu.com.bakingtime.fragments.RecipeStepDetailFragment;
 import developersudhanshu.com.bakingtime.model.RecipeDetails;
 import developersudhanshu.com.bakingtime.model.Step;
 import developersudhanshu.com.bakingtime.services.RecipeWidgetUpdateService;
@@ -23,13 +26,14 @@ import developersudhanshu.com.bakingtime.utility.Constants;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
-    private TextView recipeIngredientsTextView;
     private RecyclerView recipeStepsRecyclerView;
     private RecipeStepRecyclerViewAdapter adapter;
     private ArrayList<Step> mSteps;
     private ImageView recipeDishImage;
     private Toolbar toolbar;
     RecipeDetails recipeDetails;
+    private boolean isTwoPaneLayout;
+    private FrameLayout stepDetailContainerOfTablet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,15 +91,30 @@ public class RecipeDetailActivity extends AppCompatActivity {
         recipeStepsRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
 
+        stepDetailContainerOfTablet = findViewById(R.id.fl_recipe_step_detail_tablet_container);
+
+        if (stepDetailContainerOfTablet == null) {
+            isTwoPaneLayout = false;
+        }else {
+            isTwoPaneLayout = true;
+        }
+
         adapter.setOnItemClickListener(new RecipeStepRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(int position) {
-                Intent recipeDetailActivityIntent = new Intent(RecipeDetailActivity.this,
-                        RecipeStepDetailActivity.class);
-                recipeDetailActivityIntent.putParcelableArrayListExtra(Constants.RECIPE_STEP_DATA_EXTRA_KEY,
-                        mSteps);
-                recipeDetailActivityIntent.putExtra(Constants.RECIPE_STEP_CHOSEN_TO_WATCH_EXTRA_KEY, position);
-                startActivity(recipeDetailActivityIntent);
+                if (!isTwoPaneLayout) {
+                    Intent recipeDetailActivityIntent = new Intent(RecipeDetailActivity.this,
+                            RecipeStepDetailActivity.class);
+                    recipeDetailActivityIntent.putParcelableArrayListExtra(Constants.RECIPE_STEP_DATA_EXTRA_KEY,
+                            mSteps);
+                    recipeDetailActivityIntent.putExtra(Constants.RECIPE_STEP_CHOSEN_TO_WATCH_EXTRA_KEY, position);
+                    startActivity(recipeDetailActivityIntent);
+                } else {
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.fl_recipe_step_detail_tablet_container,
+                            new RecipeStepDetailFragment(mSteps.get(position)))
+                    .commit();
+                }
             }
         });
 
