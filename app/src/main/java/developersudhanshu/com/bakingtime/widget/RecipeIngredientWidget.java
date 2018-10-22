@@ -37,7 +37,7 @@ public class RecipeIngredientWidget extends AppWidgetProvider {
 
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_ingredient_list);
 
-        views.setEmptyView(R.id.widget_ingredient_list, R.id.tv_widget_empty_view);
+        views.setEmptyView(R.id.widget_ingredient_list, R.id.fl_empty_layout);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }

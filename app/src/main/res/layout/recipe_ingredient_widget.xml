@@ -25,19 +25,33 @@
             android:textColor="@android:color/black"
             android:fontFamily="sans-serif-condensed"
             android:textSize="20sp"
-            android:text="Recipe Name here"
+            android:layout_gravity="center"
             android:gravity="center" />
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/widget_ingredient_list"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/widget_ingredient_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-    <TextView
-        android:id="@+id/tv_widget_empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No Recipe recently viewed"/>
+        <FrameLayout
+            android:id="@+id/fl_empty_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/no_recipe_viewed"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@android:color/white"/>
+        </FrameLayout>
+    </FrameLayout>
 
 </LinearLayout>

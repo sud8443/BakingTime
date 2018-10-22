@@ -1,6 +1,8 @@
 package developersudhanshu.com.bakingtime.activities;
 
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,21 +38,42 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         mSteps = new ArrayList<>();
 
-        if (getIntent() != null && getIntent().hasExtra(Constants.RECIPE_DATA_EXTRA_KEY)){
-            recipeDetails = getIntent().getParcelableExtra(Constants.RECIPE_DATA_EXTRA_KEY);
+        if (getIntent() != null){
+            if (getIntent().hasExtra(Constants.RECIPE_DATA_EXTRA_KEY)) {
+                recipeDetails = getIntent().getParcelableExtra(Constants.RECIPE_DATA_EXTRA_KEY);
 
-            mSteps.addAll(recipeDetails.getSteps());
+                mSteps.addAll(recipeDetails.getSteps());
+
+                // Updating the recipeId in shared preference through a service only when opened the
+                // activity through the main screen
+                Intent updateRecipeId = new Intent(this, RecipeWidgetUpdateService.class);
+                if (checkIfUpdateServiceIsRunningOrNot(RecipeWidgetUpdateService.class)) {
+                    // Stopping the service before restarting the service again to update
+                    // the widget
+                    stopService(updateRecipeId);
+                }
+
+                updateRecipeId.setAction(RecipeWidgetUpdateService.ACTION_UPDATE_RECIPE_ID_FOR_WIDGET);
+                updateRecipeId.putExtra(Constants.RECIPE_ID_INTENT_EXTRA_KEY, recipeDetails.getRecipeId());
+                updateRecipeId.putExtra(Constants.RECIPE_NAME_INTENT_EXTRA_KEY, recipeDetails.getName());
+                startService(updateRecipeId);
+            }
+            // TODO: Write the code to open the DetailActivity when clicked on the widget
         }
-
-        // Updating the recipeId in shared preference through a service
-        Intent updateRecipeId = new Intent(this, RecipeWidgetUpdateService.class);
-        updateRecipeId.setAction(RecipeWidgetUpdateService.ACTION_UPDATE_RECIPE_ID_FOR_WIDGET);
-        updateRecipeId.putExtra(Constants.RECIPE_ID_INTENT_EXTRA_KEY, recipeDetails.getRecipeId());
-        updateRecipeId.putExtra(Constants.RECIPE_NAME_INTENT_EXTRA_KEY, recipeDetails.getName());
-        startService(updateRecipeId);
 
 //        RecipeWidgetUpdateService.startActionUpdateWidget(this);
         setUpViews();
+    }
+
+    public boolean checkIfUpdateServiceIsRunningOrNot(Class<?> serviceClass) {
+        // Method to check whether a service is running in the background or not
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setUpViews() {
