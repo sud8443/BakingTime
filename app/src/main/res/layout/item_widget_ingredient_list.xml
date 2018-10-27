@@ -5,19 +5,15 @@
 
     <TextView
         android:id="@+id/widget_tv_ingredient_quantity"
-        android:textColor="@android:color/background_dark"
-        android:textSize="18sp"
-        android:fontFamily="sans-serif-condensed"
+        style="@style/WidgetListTextViewStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/widget_tv_ingredient_measure"
         android:layout_width="wrap_content"
-        android:textColor="@android:color/background_dark"
-        android:textSize="18sp"
+        style="@style/WidgetListTextViewStyle"
         android:layout_marginStart="2dp"
-        android:fontFamily="sans-serif-condensed"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/widget_tv_ingredient_quantity"/>
 
@@ -25,9 +21,7 @@
         android:id="@+id/widget_tv_ingredient_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/background_dark"
-        android:textSize="18sp"
+        style="@style/WidgetListTextViewStyle"
         android:layout_marginStart="5dp"
-        android:fontFamily="sans-serif-condensed"
         android:layout_toEndOf="@id/widget_tv_ingredient_measure"/>
 </RelativeLayout>
