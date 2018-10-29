@@ -25,6 +25,9 @@ public abstract class Constants {
 
     public static final String BULLET_CODE = "\u2022";
 
+    // RecyclerView state keys
+    public static final String RECYCLER_VIEW_STATE_KEY = "RecyclerViewKey";
+
     // Shared preferences key
     public static final String SHARED_PREFERENCES_NAME = "RecipeShredPreferences";
     public static final String RECIPE_ID_SHARED_PREFERENCES_KEY = "RecipeIdSharedPreferences";

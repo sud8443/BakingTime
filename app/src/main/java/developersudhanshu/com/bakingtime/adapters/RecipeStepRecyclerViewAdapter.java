@@ -46,7 +46,7 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.setBackgroundColor(mContext.getResources().getColor(R.color.cardview_dark_background));
+                v.setBackgroundColor(mContext.getResources().getColor(R.color.lightGrey));
                 if (lastClickedPosition != -1)
                     notifyItemChanged(lastClickedPosition);
                 lastClickedPosition = position;

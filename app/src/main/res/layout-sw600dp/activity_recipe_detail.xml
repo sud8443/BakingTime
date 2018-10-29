@@ -44,11 +44,40 @@
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <LinearLayout
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:id="@+id/rv_recipe_steps_act_recipe_details"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/btn_recipe_ingredients_label_act_recipe_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ingredients_label"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:background="@drawable/circular_border_background"
+                android:padding="5dp"
+                android:textColor="@android:color/white"/>
+
+
+            <TextView
+                android:id="@+id/tv_recipe_steps_label_act_recipe_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/steps_label"
+                android:textSize="20sp"
+                android:background="@drawable/circular_border_background"
+                android:padding="5dp"
+                android:textColor="@android:color/white"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_recipe_steps_act_recipe_details"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"/>
+        </LinearLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 

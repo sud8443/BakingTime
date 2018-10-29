@@ -60,7 +60,7 @@ public class Ingredient implements Parcelable {
 
     protected Ingredient(Parcel in) {
         this.quantity = in.readFloat();
-        this.ingredient = in.readString();
+        this.measure = in.readString();
         this.ingredient = in.readString();
     }
 

@@ -4,12 +4,16 @@ package developersudhanshu.com.bakingtime.activities;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,21 +23,24 @@ import java.util.ArrayList;
 import developersudhanshu.com.bakingtime.R;
 import developersudhanshu.com.bakingtime.adapters.RecipeStepRecyclerViewAdapter;
 import developersudhanshu.com.bakingtime.fragments.RecipeStepDetailFragment;
+import developersudhanshu.com.bakingtime.model.Ingredient;
 import developersudhanshu.com.bakingtime.model.RecipeDetails;
 import developersudhanshu.com.bakingtime.model.Step;
 import developersudhanshu.com.bakingtime.services.RecipeWidgetUpdateService;
 import developersudhanshu.com.bakingtime.utility.Constants;
 
-public class RecipeDetailActivity extends AppCompatActivity {
+public class RecipeDetailActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerView recipeStepsRecyclerView;
     private RecipeStepRecyclerViewAdapter adapter;
     private ArrayList<Step> mSteps;
+    private Button recipeIngredients;
     private ImageView recipeDishImage;
     private Toolbar toolbar;
     RecipeDetails recipeDetails;
     private boolean isTwoPaneLayout;
     private FrameLayout stepDetailContainerOfTablet;
+    private Parcelable recyclerViewState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +91,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         recipeStepsRecyclerView = findViewById(R.id.rv_recipe_steps_act_recipe_details);
         recipeDishImage = findViewById(R.id.img_view_recipe_act_recipe_details);
         toolbar = findViewById(R.id.toolbar_act_recipe_details);
+        recipeIngredients = findViewById(R.id.btn_recipe_ingredients_label_act_recipe_detail);
 
         adapter = new RecipeStepRecyclerViewAdapter(this, mSteps);
 
@@ -98,6 +106,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
         }else {
             isTwoPaneLayout = true;
         }
+
+        recipeIngredients.setOnClickListener(this);
 
         adapter.setOnItemClickListener(new RecipeStepRecyclerViewAdapter.OnItemClickListener() {
             @Override
@@ -120,5 +130,49 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         recipeDishImage.setImageResource(Constants.RECIPE_IMAGE_HASH_MAP.get(recipeDetails.getName()));
         toolbar.setTitle(recipeDetails.getName());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (recyclerViewState != null) {
+            recipeStepsRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        recyclerViewState = recipeStepsRecyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(Constants.RECYCLER_VIEW_STATE_KEY, recyclerViewState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        recyclerViewState = savedInstanceState.getParcelable(Constants.RECYCLER_VIEW_STATE_KEY);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_recipe_ingredients_label_act_recipe_detail:
+                View view = View.inflate(this, R.layout.dialog_ingredient_list, null);
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                                        .setTitle(getString(R.string.ingredients_label))
+                                        .setView(view).create();
+                TextView ingredientsText = view.findViewById(R.id.tv_recipe_ingredient_dialog);
+                StringBuilder builder = new StringBuilder();
+                for (Ingredient i: recipeDetails.getIngredients()) {
+                    builder.append(Constants.BULLET_CODE + " " + i.getQuantity() + " "
+                            + i.getMeasure() + " " + i.getIngredient() + "\n");
+                }
+                ingredientsText.setText(builder.toString());
+                dialog.show();
+                break;
+        }
     }
 }

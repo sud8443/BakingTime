@@ -1,11 +1,14 @@
 package developersudhanshu.com.bakingtime.activities;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -34,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<RecipeDetails> recipeDetailsArrayList;
     private RecipeDatabase mDb;
     private AppExecutors executors;
+    private CardView loadingLayoutMainScreen;
+    private Parcelable recyclerViewState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
         recipeDataArrayList = new ArrayList<>();
         recipeDetailsArrayList = new ArrayList<>();
+        loadingLayoutMainScreen = findViewById(R.id.loading_layout_main_screen);
+        loadingLayoutMainScreen.setVisibility(View.VISIBLE);
 
         setUpRecyclerView();
 
@@ -58,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 if(response.isSuccessful()){
 
                     // Iterating through the recipe data to get individual recipe's
+                    loadingLayoutMainScreen.setVisibility(View.GONE);
                     recipeDataArrayList.clear();
                     recipeDetailsArrayList.clear();
                     for(RecipeResponse recipe: response.body()){
@@ -70,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                     setUpImagePaths();
                     adapter.notifyDataSetChanged();
+
+                    if (recyclerViewState != null) {
+                        mainRecipeList.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                    }
 
                     // Saving the recipes to the database
                     if (Utility.isFirstLaunch(MainActivity.this)) {
@@ -98,6 +110,30 @@ public class MainActivity extends AppCompatActivity {
                 Log.v("RESPONSE", "in onFailure, message: " + t.getLocalizedMessage());
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (recyclerViewState != null) {
+            mainRecipeList.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        recyclerViewState = mainRecipeList.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(Constants.RECYCLER_VIEW_STATE_KEY, recyclerViewState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        recyclerViewState = savedInstanceState.getParcelable(Constants.RECYCLER_VIEW_STATE_KEY);
     }
 
     private void setUpImagePaths() {
