@@ -2,6 +2,9 @@ package developersudhanshu.com.bakingtime.activities;
 
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -12,6 +15,7 @@ import android.view.View;
 
 import java.util.ArrayList;
 
+import developersudhanshu.com.bakingtime.IdlingResource.SimpleIdlingResource;
 import developersudhanshu.com.bakingtime.R;
 import developersudhanshu.com.bakingtime.adapters.RecipeRecyclerViewAdapter;
 import developersudhanshu.com.bakingtime.lifecycle_components.AppExecutors;
@@ -39,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private AppExecutors executors;
     private CardView loadingLayoutMainScreen;
     private Parcelable recyclerViewState;
+    @Nullable private SimpleIdlingResource mSimpleIdlingResource; // @Nullable indicates that it will be null in production
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +57,32 @@ public class MainActivity extends AppCompatActivity {
 
         setUpRecyclerView();
 
-        fetchingRecipeDataAndUpdatingViews();
         mDb = RecipeDatabase.getInstance(this);
         executors = AppExecutors.getsInstance(this);
+    }
+
+    @Nullable
+    @VisibleForTesting
+    public IdlingResource getIdlingResource() {
+        if (mSimpleIdlingResource == null)
+            mSimpleIdlingResource = new SimpleIdlingResource();
+
+        return mSimpleIdlingResource;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Moved the call to get data from the internet to onStart so that there is enough time
+        // for the idling resource to get initialized
+
+        // Initially it is not ready for testing so asking espresso to pause any testing
+        if (mSimpleIdlingResource != null)
+            mSimpleIdlingResource.setIdleState(false);
+
+        fetchingRecipeDataAndUpdatingViews();
+
     }
 
     private void fetchingRecipeDataAndUpdatingViews() {
@@ -82,6 +110,10 @@ public class MainActivity extends AppCompatActivity {
                     if (recyclerViewState != null) {
                         mainRecipeList.getLayoutManager().onRestoreInstanceState(recyclerViewState);
                     }
+
+                    // If the Simple Idling resources is not null so it is ready to continue testing
+                    if (mSimpleIdlingResource != null)
+                        mSimpleIdlingResource.setIdleState(true);
 
                     // Saving the recipes to the database
                     if (Utility.isFirstLaunch(MainActivity.this)) {
