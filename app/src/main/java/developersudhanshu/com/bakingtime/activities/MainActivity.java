@@ -9,7 +9,6 @@ import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -17,6 +16,8 @@ import android.view.View;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import developersudhanshu.com.bakingtime.IdlingResource.SimpleIdlingResource;
 import developersudhanshu.com.bakingtime.R;
 import developersudhanshu.com.bakingtime.adapters.RecipeRecyclerViewAdapter;
@@ -37,13 +38,15 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView mainRecipeList;
+    @BindView(R.id.rv_recipe_list)
+    RecyclerView mainRecipeList;
     private ArrayList<RecipeData> recipeDataArrayList;
     private RecipeRecyclerViewAdapter adapter;
     private ArrayList<RecipeDetails> recipeDetailsArrayList;
     private RecipeDatabase mDb;
     private AppExecutors executors;
-    private CardView loadingLayoutMainScreen;
+    @BindView(R.id.loading_layout_main_screen)
+    CardView loadingLayoutMainScreen;
     private Parcelable recyclerViewState;
     private int columnCount = 1; // default value
     @Nullable private SimpleIdlingResource mSimpleIdlingResource; // @Nullable indicates that it will be null in production
@@ -53,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ButterKnife.bind(this);
         recipeDataArrayList = new ArrayList<>();
         recipeDetailsArrayList = new ArrayList<>();
-        loadingLayoutMainScreen = findViewById(R.id.loading_layout_main_screen);
         loadingLayoutMainScreen.setVisibility(View.VISIBLE);
 
         setUpRecyclerView();
@@ -179,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
 
     // Method to setup Recycler view, add Adapters and any animation if required
     private void setUpRecyclerView() {
-        mainRecipeList = findViewById(R.id.rv_recipe_list);
 
         adapter = new RecipeRecyclerViewAdapter(this, recipeDataArrayList);
 

@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import developersudhanshu.com.bakingtime.R;
 import developersudhanshu.com.bakingtime.adapters.RecipeStepRecyclerViewAdapter;
 import developersudhanshu.com.bakingtime.fragments.RecipeStepDetailFragment;
@@ -31,21 +34,29 @@ import developersudhanshu.com.bakingtime.utility.Constants;
 
 public class RecipeDetailActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private RecyclerView recipeStepsRecyclerView;
+    @BindView(R.id.rv_recipe_steps_act_recipe_details)
+    RecyclerView recipeStepsRecyclerView;
     private RecipeStepRecyclerViewAdapter adapter;
     private ArrayList<Step> mSteps;
-    private Button recipeIngredients;
-    private ImageView recipeDishImage;
-    private Toolbar toolbar;
+    @BindView(R.id.btn_recipe_ingredients_label_act_recipe_detail)
+    Button recipeIngredients;
+    @BindView(R.id.img_view_recipe_act_recipe_details)
+    ImageView recipeDishImage;
+    @BindView(R.id.toolbar_act_recipe_details)
+    Toolbar toolbar;
     RecipeDetails recipeDetails;
     private boolean isTwoPaneLayout;
-    private FrameLayout stepDetailContainerOfTablet;
+    @BindView(R.id.fl_recipe_step_detail_tablet_container)
+    @Nullable
+    FrameLayout stepDetailContainerOfTablet;
     private Parcelable recyclerViewState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
+
+        ButterKnife.bind(this);
 
         mSteps = new ArrayList<>();
 
@@ -88,18 +99,11 @@ public class RecipeDetailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void setUpViews() {
-        recipeStepsRecyclerView = findViewById(R.id.rv_recipe_steps_act_recipe_details);
-        recipeDishImage = findViewById(R.id.img_view_recipe_act_recipe_details);
-        toolbar = findViewById(R.id.toolbar_act_recipe_details);
-        recipeIngredients = findViewById(R.id.btn_recipe_ingredients_label_act_recipe_detail);
-
         adapter = new RecipeStepRecyclerViewAdapter(this, mSteps);
 
         recipeStepsRecyclerView.setAdapter(adapter);
         recipeStepsRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
-
-        stepDetailContainerOfTablet = findViewById(R.id.fl_recipe_step_detail_tablet_container);
 
         if (stepDetailContainerOfTablet == null) {
             isTwoPaneLayout = false;
