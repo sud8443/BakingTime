@@ -1,6 +1,7 @@
 package developersudhanshu.com.bakingtime.activities;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private AppExecutors executors;
     private CardView loadingLayoutMainScreen;
     private Parcelable recyclerViewState;
+    private int columnCount = 1; // default value
     @Nullable private SimpleIdlingResource mSimpleIdlingResource; // @Nullable indicates that it will be null in production
 
     @Override
@@ -181,7 +184,15 @@ public class MainActivity extends AppCompatActivity {
         adapter = new RecipeRecyclerViewAdapter(this, recipeDataArrayList);
 
         mainRecipeList.setAdapter(adapter);
-        mainRecipeList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        int orientation = getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            columnCount = getResources().getInteger(R.integer.list_column_count_portrait);
+        }else {
+            columnCount = getResources().getInteger(R.integer.list_column_count_landscape);
+        }
+        mainRecipeList.setLayoutManager(new StaggeredGridLayoutManager( columnCount
+                ,StaggeredGridLayoutManager.VERTICAL));
 
         // Setting onItemClick listener on the item
         adapter.setOnItemClickListener(new RecipeRecyclerViewAdapter.OnItemClickListener() {

@@ -23,10 +23,8 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
-    // implementation 'com.android.support:recyclerview-v7:27.1.1' - Inspect the 27 and 26 version issue
-    // Change the code to incorporate ButterKnife in the code too
-//    implementation 'com.jakewharton:butterknife:8.8.1'
-//    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.google.android.exoplayer:exoplayer:r2.2.0'
 //
     // Adding Android Architecture Components

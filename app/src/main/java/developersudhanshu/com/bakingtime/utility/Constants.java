@@ -27,6 +27,7 @@ public abstract class Constants {
 
     // RecyclerView state keys
     public static final String RECYCLER_VIEW_STATE_KEY = "RecyclerViewKey";
+    public static final String RECYCLER_VIEW_CLCIKED_ITEM_STATE_KEY = "ClickedRecyclerViewItemKey";
 
     // Shared preferences key
     public static final String SHARED_PREFERENCES_NAME = "RecipeShredPreferences";
