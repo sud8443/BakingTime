@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -76,6 +77,7 @@ public class RecipeStepDetailFragment extends Fragment {
         if (savedInstanceState != null) {
             playerCurrentPosition = savedInstanceState.getLong(Constants.EXO_PLAYER_POSITION_KEY);
             isPaused = savedInstanceState.getBoolean(Constants.EXO_PLAYER_IS_PAUSED_KEY);
+            recipeStep = savedInstanceState.getParcelable(Constants.RECIPE_STEP_DETAILS_FRAGMENT_SAVED_INSTANCE_KEY);
         }
 
         RecipeStepViewModelFactory factory = new RecipeStepViewModelFactory(recipeStep);
@@ -111,6 +113,8 @@ public class RecipeStepDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putParcelable(Constants.RECIPE_STEP_DETAILS_FRAGMENT_SAVED_INSTANCE_KEY,
+                recipeStep);
         outState.putLong(Constants.EXO_PLAYER_POSITION_KEY, playerCurrentPosition);
         outState.putBoolean(Constants.EXO_PLAYER_IS_PAUSED_KEY, isPaused);
     }
@@ -163,9 +167,26 @@ public class RecipeStepDetailFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        // Before API level 24 there was no guarantee of onStop being called
+        // but now we can free the exoplayer resource in onStop
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
+            savingExoPlayerState();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+            savingExoPlayerState();
+
+    }
+
+    private void savingExoPlayerState() {
         if(isVideoPresent) {
             playerCurrentPosition = mExoPlayer.getCurrentPosition();
-            if (mExoPlayer.getPlaybackState() == ExoPlayer.STATE_READY && mExoPlayer.getPlayWhenReady()) {
+            if (mExoPlayer.getPlaybackState() == ExoPlayer.STATE_READY ||
+                    mExoPlayer.getPlaybackState() == ExoPlayer.STATE_BUFFERING &&
+                            mExoPlayer.getPlayWhenReady()) {
                 isPaused = false;
             }else{
                 isPaused = true;

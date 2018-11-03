@@ -25,6 +25,9 @@ public abstract class Constants {
 
     public static final String BULLET_CODE = "\u2022";
 
+    // Saved Instance State keys
+    public static final String RECIPE_STEP_DETAILS_FRAGMENT_SAVED_INSTANCE_KEY = "RecipeStepDetailsKey";
+
     // RecyclerView state keys
     public static final String RECYCLER_VIEW_STATE_KEY = "RecyclerViewKey";
     public static final String RECYCLER_VIEW_CLCIKED_ITEM_STATE_KEY = "ClickedRecyclerViewItemKey";
